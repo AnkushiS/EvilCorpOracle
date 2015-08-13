@@ -1,3 +1,4 @@
+import java.awt.List;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,7 +49,7 @@ public class EvilAskApp {
 			
 		}
 		
-		System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W])"
+		System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W],Remove Account[R])"
 				+ " or -1 to finish");
 		String tranType = scan.next();
 		while(!tranType.equals(minOne)){
@@ -72,7 +73,6 @@ public class EvilAskApp {
 				tranAcc.setDate(processDate(dateIn));
 
 			} else if (tranAcc.tranType.equalsIgnoreCase("D")) {
-				tranAcc.amount = scan.nextInt();
 				System.out.println("Enter the amount of the check: ");
 				double amount = scan.nextInt();
 				tranAcc.setAmount(amount);
@@ -80,16 +80,18 @@ public class EvilAskApp {
 						.println("Enter the date(mm/dd/yyy) of the check: ");
 				String dateIn = scan.next();
 				tranAcc.setDate(processDate(dateIn));	
-			}else{
-				System.out.println("Done transaction questions");
+			}else if(tranAcc.tranType.equalsIgnoreCase("R")){
+				tranAcc.setTranType("R");
+				
 			}
 			
 			tranAcc.getAccNum();
 			tranAcc.getTranType();
 			tranAcc.getAmount();
 			
+			
 			ll.setTranAcc(tranAcc);
-			System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W])"
+			System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W], Remove Account[R])"
 					+ " or -1 to finish");
 			tranType = scan.next();
 		}
@@ -105,14 +107,16 @@ public class EvilAskApp {
 		
 	}
 
-	public static boolean removeAccount(ll){
-		boolean remmoved = false;
-		for(int i =0; i<= ll.getInitAcc().size(); i++){
-			if(ll.getInitAcc().get(i).getTotalBal() <=0){
-				ll.get(i).remove();
-				removed = true;
+	public static void removeAccount(Lists ll){
+		for(int i =0; i< ll.getInitAcc().size(); i++){
+			if(ll.getTranAcc().get(i).getTranType().equalsIgnoreCase("R") == true){
+				if(ll.getInitAcc().get(i).getTotalBal()==0){
+					ll.getInitAcc().remove(i);
+					System.out.println("Removed the Account# " + ll.getTranAcc().get(i).getAccNum());
+				}else{
+					System.out.println("Balanace not Zero, cannot remove");
+					}
 			}
-		return removed;
 		}
 	}
 	

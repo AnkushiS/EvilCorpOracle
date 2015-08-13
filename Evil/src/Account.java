@@ -9,6 +9,7 @@ public class Account {
 	public String tranType;
 	public double totalBal;
 	public boolean overDraft;
+
 	
 	public int getAccNum() {
 		return accNum;
