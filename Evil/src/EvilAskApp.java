@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class EvilAskApp {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		 //URL of Oracle database server
         String url = "jdbc:oracle:thin:system/password@localhost"; 
       
@@ -76,33 +76,24 @@ public class EvilAskApp {
 			if (tranAcc.getTranType().equalsIgnoreCase("C")
 					|| tranAcc.getTranType().equalsIgnoreCase("D")
 					|| tranAcc.getTranType().equalsIgnoreCase("W")) {
-				System.out.print("Enter the amount of the check: ");
-				double amount = -(scan.nextDouble());
+				double amount = -Validator.getDouble(scan, "Enter the amount: ", 0);
 				scan.nextLine();
 				tranAcc.setAmount(amount);
-				System.out.print("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.nextLine();
-				tranAcc.setDate(processDate(dateIn));
+				Date dateIn = Validator.getDate(scan, "Enter the date (mm/dd/yyy): ");
+				tranAcc.setDate(dateIn);
 
 			} else if (tranAcc.getTranType().equalsIgnoreCase("DEP")) {
-				System.out.print("Enter the amount of the check: ");
-				double amount = scan.nextDouble();
+				double amount = Validator.getDouble(scan, "Enter the amount: ", 0);
 				tranAcc.setAmount(amount);
-				System.out.print("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.nextLine();
-				tranAcc.setDate(processDate(dateIn));	
+				Date dateIn = Validator.getDate(scan, "Enter the date (mm/dd/yyy): ");
+				tranAcc.setDate(dateIn);
 			} else {
 				System.out.println("Done transaction questions");
 			}
 			
-			tranAcc.getAccNum();
-			tranAcc.getTranType();
-			tranAcc.getAmount();
-			
 			ll.setTranAcc(tranAcc);
-			System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W])"
-					+ " or -1 to finish");
-			tranType = scan.next();
+			
+			tranType = Validator.getType(scan, "Enter a transaction type (Add an account[A], Check[C], Debit card[D], Deposit[DEP], Remove an account[R], Withdrawal[W] or -1 to finish");
 		}
 		
 		//calculate total tax
@@ -133,15 +124,9 @@ public class EvilAskApp {
 	}
 
 
-	private static String processReverseDate(long date) {
-        //creating date from millisecond
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(date);;
-		int mYear = cal.get(cal.YEAR);
-		int mMonth = cal.get(cal.MONTH);
-		int mDay = cal.get(cal.DAY_OF_MONTH);
-		String dd = mMonth+ "/"+ mDay + "/" +mYear;
-        return dd;
+	private static String processReverseDate(Date date) {
+		SimpleDateFormat formatDate = new SimpleDateFormat("M/d/yyyy");
+		return formatDate.format(date);
 	}
 
 
@@ -175,21 +160,5 @@ public class EvilAskApp {
 			
 		}
 	}
-
-	public static long processDate(String tranDate) {
-			long millis = 0;
-			try {
-				SimpleDateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-				df.setLenient(false);
-				Date date = df.parse(tranDate);
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(date);
-				millis = cal.getTimeInMillis();
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-			}
-			return millis;
-		}
-
 	
 }
