@@ -100,9 +100,21 @@ public class EvilAskApp {
 		printDetails(ll);
 		
 		printAllTran(ll);
+		// remove an account if the balance is less than zero
+		removeAccount(ll);
 		
 	}
 
+	public static boolean removeAccount(ll){
+		boolean remmoved = false;
+		for(int i =0; i<= ll.getInitAcc().size(); i++){
+			if(ll.getInitAcc().get(i).getTotalBal() <=0){
+				ll.get(i).remove();
+				removed = true;
+			}
+		return removed;
+		}
+	}
 	
 	private static void printAllTran(Lists ll) {
 		System.out.println("Printing the Transaction Summary");
