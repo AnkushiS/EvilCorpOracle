@@ -22,7 +22,7 @@ public class EvilAskApp {
         props.setProperty("password", "password");
       
         //creating connection to Oracle database using JDBC
-        Connection conn = DriverManager.getConnection(url,props);
+        Connection conn = DriverManager.getConnection(url, props);
 
 		Lists ll = new Lists();
 		
@@ -64,38 +64,34 @@ public class EvilAskApp {
 //			
 //		}
 		
-		System.out.println("Enter a transaction type (Add an account[A], Check[C], Debit card[De], Deposit[D], Remove[R], Withdrawal[W] or -1 to finish");
-		String tranType = scan.nextLine();
+		String tranType = Validator.getType(scan, "Enter a transaction type (Add an account[A], Check[C], Debit card[D], Deposit[DEP], Remove an account[R], Withdrawal[W] or -1 to finish");
 		while(!tranType.equals(minOne)){
 			Account tranAcc = new Account();
 			tranAcc.setTranType(tranType);
 			
-			System.out.println("Enter the account#: ");
-			String numIn = scan.nextLine();
-			tranAcc.setAccNum(numIn);
+			System.out.print("Enter the account#: ");
+			String numIn = Validator.getString(scan, "Enter the account#: ");
+			tranAcc.setAccNum(numIn);			
 			
-			
-			if (tranType.equalsIgnoreCase("c")
-					|| tranType.equalsIgnoreCase("De")
-					|| tranType.equalsIgnoreCase("W")) {
-				System.out.println("Enter the amount of the check: ");
-				double amount = -(scan.nextInt());
-				tranAcc.setAmount(amount);;
-				System.out
-						.println("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.next();
+			if (tranAcc.getTranType().equalsIgnoreCase("C")
+					|| tranAcc.getTranType().equalsIgnoreCase("D")
+					|| tranAcc.getTranType().equalsIgnoreCase("W")) {
+				System.out.print("Enter the amount of the check: ");
+				double amount = -(scan.nextDouble());
+				scan.nextLine();
+				tranAcc.setAmount(amount);
+				System.out.print("Enter the date(mm/dd/yyy) of the check: ");
+				String dateIn = scan.nextLine();
 				tranAcc.setDate(processDate(dateIn));
 
-			} else if (tranAcc.tranType.equalsIgnoreCase("D")) {
-				tranAcc.amount = scan.nextInt();
-				System.out.println("Enter the amount of the check: ");
-				double amount = scan.nextInt();
+			} else if (tranAcc.getTranType().equalsIgnoreCase("DEP")) {
+				System.out.print("Enter the amount of the check: ");
+				double amount = scan.nextDouble();
 				tranAcc.setAmount(amount);
-				System.out
-						.println("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.next();
+				System.out.print("Enter the date(mm/dd/yyy) of the check: ");
+				String dateIn = scan.nextLine();
 				tranAcc.setDate(processDate(dateIn));	
-			}else{
+			} else {
 				System.out.println("Done transaction questions");
 			}
 			
