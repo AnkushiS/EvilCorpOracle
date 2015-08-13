@@ -13,6 +13,7 @@ public class EvilAskApp {
 		
 		String minOne = "-1";
 		int accountNum = 0;
+		int remve_Acc_num = 0;
 		
 		Scanner scan = new Scanner(System.in);
 		
@@ -80,17 +81,17 @@ public class EvilAskApp {
 						.println("Enter the date(mm/dd/yyy) of the check: ");
 				String dateIn = scan.next();
 				tranAcc.setDate(processDate(dateIn));	
-			}else if(tranAcc.tranType.equalsIgnoreCase("R")){
-				tranAcc.setTranType("R");
-				
 			}
 			
-			tranAcc.getAccNum();
-			tranAcc.getTranType();
-			tranAcc.getAmount();
-			
-			
+			//tranAcc.getAccNum();
+			//tranAcc.getTranType();
+			//tranAcc.getAmount();
+	
 			ll.setTranAcc(tranAcc);
+			
+			remve_Acc_num = findAccount(tranAcc.getAccNum(), ll);
+			
+			
 			System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W], Remove Account[R])"
 					+ " or -1 to finish");
 			tranType = scan.next();
@@ -98,27 +99,38 @@ public class EvilAskApp {
 		
 		//calculate total tax
 		calTotalBal(ll);
+		// remove account
+		removeAccount(remve_Acc_num, ll);
+			
 		//print the total
 		printDetails(ll);
 		
 		printAllTran(ll);
 		// remove an account if the balance is less than zero
-		removeAccount(ll);
+		
 		
 	}
 
-	public static void removeAccount(Lists ll){
-		for(int i =0; i< ll.getInitAcc().size(); i++){
-			if(ll.getTranAcc().get(i).getTranType().equalsIgnoreCase("R") == true){
-				if(ll.getInitAcc().get(i).getTotalBal()==0){
-					ll.getInitAcc().remove(i);
-					System.out.println("Removed the Account# " + ll.getTranAcc().get(i).getAccNum());
-				}else{
-					System.out.println("Balanace not Zero, cannot remove");
-					}
+	private static int findAccount(int Num, Lists ll) {
+		for(int i=0; i<ll.getInitAcc().size(); i++){
+			if(ll.getInitAcc().get(i).getAccNum()== Num){
+				return Num;
+			}
+		}
+		return Num;
+		
+	}
+
+	public static void removeAccount(int remv_Acc_num, Lists ll){
+				
+		for(int i=0; i<ll.getInitAcc().size();i++){
+			if(ll.getInitAcc().get(i).getAccNum()==remv_Acc_num){
+				ll.getInitAcc().remove(i);
+				System.out.println("Removed from the account# " +remv_Acc_num);
 			}
 		}
 	}
+		
 	
 	private static void printAllTran(Lists ll) {
 		System.out.println("Printing the Transaction Summary");
@@ -134,7 +146,6 @@ public class EvilAskApp {
 				}
 			}
 		}
-		
 	}
 
 
