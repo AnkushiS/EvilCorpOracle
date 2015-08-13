@@ -1,7 +1,7 @@
 
 public class Account {
 
-	public int accNum;
+	public String accNum;
 	public String Name;
 	public double initBal;
 	public double amount;
@@ -10,10 +10,10 @@ public class Account {
 	public double totalBal;
 	public boolean overDraft;
 	
-	public int getAccNum() {
+	public String getAccNum() {
 		return accNum;
 	}
-	public void setAccNum(int accNum) {
+	public void setAccNum(String accNum) {
 		this.accNum = accNum;
 	}
 	public String getName() {

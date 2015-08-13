@@ -3,11 +3,27 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class EvilAskApp {
 
 	public static void main(String[] args) {
-		
+		 //URL of Oracle database server
+        String url = "jdbc:oracle:thin:system/password@localhost"; 
+      
+        //properties for creating connection to Oracle database
+        Properties props = new Properties();
+        props.setProperty("user", "testdb");
+        props.setProperty("password", "password");
+      
+        //creating connection to Oracle database using JDBC
+        Connection conn = DriverManager.getConnection(url,props);
+
 		Lists ll = new Lists();
 		
 		String minOne = "-1";
@@ -16,47 +32,46 @@ public class EvilAskApp {
 		Scanner scan = new Scanner(System.in);
 		
 		System.out.println("Welcome to the Corp Savings and Loan");
-		System.out.println("Please create the user accounts");
+//		System.out.println("Please create the user accounts");
+//		
+//		System.out.println("Enter an account # or -1 to stop entering accounts");
+//		int Num = scan.nextInt();
+//		
+//		while(Num != -1){
+//			if(Num != -1)
+//				accountNum = Num;
+//			else
+//				break;
+//			Account newAcc = new Account();
+//			newAcc.setAccNum(accountNum);
+//			
+//			System.out.println("Enter name of the account# " +accountNum );
+//			String name = scan.next();
+//			newAcc.setName(name);
+//			
+//			System.out.println("enter the balance for account# " +accountNum);
+//			double initBal = scan.nextDouble();
+//			newAcc.setInitBal(initBal);
+//			
+//			newAcc.getAccNum();
+//			newAcc.getName();
+//			newAcc.getInitBal();
+//			
+//			// set the init array list with values
+//			ll.setInitAcc(newAcc);
+//			System.out.println("Enter an account # or -1 to stop entering accounts");
+//			Num = scan.nextInt();	
+//			
+//		}
 		
-		System.out.println("Enter an account # or -1 to stop entering accounts");
-		int Num = scan.nextInt();
-		
-		while(Num != -1){
-			if(Num != -1)
-				accountNum = Num;
-			else
-				break;
-			Account newAcc = new Account();
-			newAcc.setAccNum(accountNum);
-			
-			System.out.println("Enter name of the account# " +accountNum );
-			String name = scan.next();
-			newAcc.setName(name);
-			
-			System.out.println("enter the balance for account# " +accountNum);
-			double initBal = scan.nextDouble();
-			newAcc.setInitBal(initBal);
-			
-			newAcc.getAccNum();
-			newAcc.getName();
-			newAcc.getInitBal();
-			
-			// set the init array list with values
-			ll.setInitAcc(newAcc);
-			System.out.println("Enter an account # or -1 to stop entering accounts");
-			Num = scan.nextInt();	
-			
-		}
-		
-		System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W])"
-				+ " or -1 to finish");
-		String tranType = scan.next();
+		System.out.println("Enter a transaction type (Add an account[A], Check[C], Debit card[De], Deposit[D], Remove[R], Withdrawal[W] or -1 to finish");
+		String tranType = scan.nextLine();
 		while(!tranType.equals(minOne)){
 			Account tranAcc = new Account();
 			tranAcc.setTranType(tranType);
 			
-			System.out.println("Enter the account# ");
-			int numIn = scan.nextInt();
+			System.out.println("Enter the account#: ");
+			String numIn = scan.nextLine();
 			tranAcc.setAccNum(numIn);
 			
 			
