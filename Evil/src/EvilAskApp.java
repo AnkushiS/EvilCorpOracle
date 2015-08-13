@@ -4,97 +4,102 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
 
 public class EvilAskApp {
 
-	public static void main(String[] args) {
-		
+	public static void main(String[] args) throws SQLException {
+		 //URL of Oracle database server
+        String url = "jdbc:oracle:thin:system/password@localhost"; 
+      
+        //properties for creating connection to Oracle database
+        Properties props = new Properties();
+        props.setProperty("user", "testdb");
+        props.setProperty("password", "password");
+      
+        //creating connection to Oracle database using JDBC
+        Connection conn = DriverManager.getConnection(url, props);
+
 		Lists ll = new Lists();
 		
 		String minOne = "-1";
 		int accountNum = 0;
-		int remve_Acc_num = 0;
+		String remve_Acc_num="";
 		
 		Scanner scan = new Scanner(System.in);
 		
 		System.out.println("Welcome to the Corp Savings and Loan");
-		System.out.println("Please create the user accounts");
 		
-		System.out.println("Enter an account # or -1 to stop entering accounts");
-		int Num = scan.nextInt();
+//		while(Num != -1){
+//			if(Num != -1)
+//				accountNum = Num;
+//			else
+//				break;
+//			Account newAcc = new Account();
+//			newAcc.setAccNum(accountNum);
+//			
+//			System.out.println("Enter name of the account# " +accountNum );
+//			String name = scan.next();
+//			newAcc.setName(name);
+//			
+//			System.out.println("enter the balance for account# " +accountNum);
+//			double initBal = scan.nextDouble();
+//			newAcc.setInitBal(initBal);
+//			
+//			newAcc.getAccNum();
+//			newAcc.getName();
+//			newAcc.getInitBal();
+//			
+//			// set the init array list with values
+//			ll.setInitAcc(newAcc);
+//			System.out.println("Enter an account # or -1 to stop entering accounts");
+//			Num = scan.nextInt();	
+//			
+//		}
 		
-		while(Num != -1){
-			if(Num != -1)
-				accountNum = Num;
-			else
-				break;
-			Account newAcc = new Account();
-			newAcc.setAccNum(accountNum);
-			
-			System.out.println("Enter name of the account# " +accountNum );
-			String name = scan.next();
-			newAcc.setName(name);
-			
-			System.out.println("enter the balance for account# " +accountNum);
-			double initBal = scan.nextDouble();
-			newAcc.setInitBal(initBal);
-			
-			newAcc.getAccNum();
-			newAcc.getName();
-			newAcc.getInitBal();
-			
-			// set the init array list with values
-			ll.setInitAcc(newAcc);
-			System.out.println("Enter an account # or -1 to stop entering accounts");
-			Num = scan.nextInt();	
-			
-		}
-		
-		System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W],Remove Account[R])"
-				+ " or -1 to finish");
-		String tranType = scan.next();
+		String tranType = Validator.getType(scan, "Enter a transaction type (Add an account[A], Check[C], Debit card[D], Deposit[DEP], Remove an account[R], Withdrawal[W] or -1 to finish");
 		while(!tranType.equals(minOne)){
 			Account tranAcc = new Account();
 			tranAcc.setTranType(tranType);
 			
-			System.out.println("Enter the account# ");
-			int numIn = scan.nextInt();
-			tranAcc.setAccNum(numIn);
+			System.out.print("Enter the account#: ");
+			String numIn = Validator.getString(scan, "Enter the account#: ");
+			tranAcc.setAccNum(numIn);			
 			
-			
-			if (tranType.equalsIgnoreCase("c")
-					|| tranType.equalsIgnoreCase("De")
-					|| tranType.equalsIgnoreCase("W")) {
-				System.out.println("Enter the amount of the check: ");
-				double amount = -(scan.nextInt());
-				tranAcc.setAmount(amount);;
-				System.out
-						.println("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.next();
-				tranAcc.setDate(processDate(dateIn));
+			if (tranAcc.getTranType().equalsIgnoreCase("C")
+					|| tranAcc.getTranType().equalsIgnoreCase("D")
+					|| tranAcc.getTranType().equalsIgnoreCase("W")) {
+				double amount = -Validator.getDouble(scan, "Enter the amount: ", 0);
+				scan.nextLine();
 
-			} else if (tranAcc.tranType.equalsIgnoreCase("D")) {
-				System.out.println("Enter the amount of the check: ");
-				double amount = scan.nextInt();
 				tranAcc.setAmount(amount);
-				System.out
-						.println("Enter the date(mm/dd/yyy) of the check: ");
-				String dateIn = scan.next();
-				tranAcc.setDate(processDate(dateIn));	
+				Date dateIn = Validator.getDate(scan, "Enter the date (mm/dd/yyy): ");
+				tranAcc.setDate(dateIn);
+				ll.setTranAcc(tranAcc);
+
+			} else if (tranAcc.getTranType().equalsIgnoreCase("DEP")) {
+				double amount = Validator.getDouble(scan, "Enter the amount: ", 0);
+				tranAcc.setAmount(amount);
+				Date dateIn = Validator.getDate(scan, "Enter the date (mm/dd/yyy): ");
+				tranAcc.setDate(dateIn);
+				ll.setTranAcc(tranAcc);
+			} else if(tranAcc.getTranType().equalsIgnoreCase("R")){
+				ll.setTranAcc(tranAcc);
+				remve_Acc_num = findAccount(tranAcc.getAccNum(), ll);
+			}
+			else {
+				System.out.println("Done transaction questions");
+				Date dateIn = Validator.getDate(scan, "Enter the date (mm/dd/yyy): ");
+				tranAcc.setDate(dateIn);
 			}
 			
-			//tranAcc.getAccNum();
-			//tranAcc.getTranType();
-			//tranAcc.getAmount();
-	
-			ll.setTranAcc(tranAcc);
-			
-			remve_Acc_num = findAccount(tranAcc.getAccNum(), ll);
-			
-			
-			System.out.println("Enter a transaction type (Check[c], Debit card[De], Deposit or Withdrawal[D/W], Remove Account[R])"
-					+ " or -1 to finish");
-			tranType = scan.next();
+		
+			tranType = Validator.getType(scan, "Enter a transaction type (Add an account[A], Check[C], Debit card[D], Deposit[DEP], Remove an account[R], Withdrawal[W] or -1 to finish");
 		}
 		
 		//calculate total tax
@@ -104,16 +109,16 @@ public class EvilAskApp {
 			
 		//print the total
 		printDetails(ll);
-		
+		// print all the transactions
 		printAllTran(ll);
+
 		// remove an account if the balance is less than zero
-		
 		
 	}
 
-	private static int findAccount(int Num, Lists ll) {
+	private static String findAccount(String Num, Lists ll) {
 		for(int i=0; i<ll.getInitAcc().size(); i++){
-			if(ll.getInitAcc().get(i).getAccNum()== Num){
+			if(ll.getInitAcc().get(i).getAccNum().equals(Num)){
 				return Num;
 			}
 		}
@@ -121,10 +126,10 @@ public class EvilAskApp {
 		
 	}
 
-	public static void removeAccount(int remv_Acc_num, Lists ll){
+	public static void removeAccount(String remv_Acc_num, Lists ll){
 				
 		for(int i=0; i<ll.getInitAcc().size();i++){
-			if(ll.getInitAcc().get(i).getAccNum()==remv_Acc_num){
+			if(ll.getInitAcc().get(i).getAccNum().equals(remv_Acc_num)){
 				ll.getInitAcc().remove(i);
 				System.out.println("Removed from the account# " +remv_Acc_num);
 			}
@@ -132,6 +137,16 @@ public class EvilAskApp {
 	}
 		
 	
+	private static void removeAccount(Lists ll) {
+		for(int i = 0; i< ll.getInitAcc().size(); i++){
+			if(ll.getInitAcc().get(i).getTotalBal() <= 0){
+				ll.getInitAcc().get(i).getAccNum();
+				
+			}
+		}
+	}
+
+
 	private static void printAllTran(Lists ll) {
 		System.out.println("Printing the Transaction Summary");
 		for(Account ltranAcc : ll.getTranAcc()){
@@ -149,15 +164,9 @@ public class EvilAskApp {
 	}
 
 
-	private static String processReverseDate(long date) {
-        //creating date from millisecond
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(date);;
-		int mYear = cal.get(cal.YEAR);
-		int mMonth = cal.get(cal.MONTH);
-		int mDay = cal.get(cal.DAY_OF_MONTH);
-		String dd = mMonth+ "/"+ mDay + "/" +mYear;
-        return dd;
+	private static String processReverseDate(Date date) {
+		SimpleDateFormat formatDate = new SimpleDateFormat("M/d/yyyy");
+		return formatDate.format(date);
 	}
 
 
@@ -187,25 +196,9 @@ public class EvilAskApp {
 			}else{
 				System.out.println("The balance for account# " + listacc.getAccNum() + "\t" 
 						+ "is " + formatter.format(listacc.getTotalBal()));
-			}
-			
+			}			
 		}
 	}
-
-	public static long processDate(String tranDate) {
-			long millis = 0;
-			try {
-				SimpleDateFormat df = new SimpleDateFormat("mm/dd/yyyy");
-				df.setLenient(false);
-				Date date = df.parse(tranDate);
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(date);
-				millis = cal.getTimeInMillis();
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-			}
-			return millis;
-		}
 
 	
 }

@@ -14,7 +14,7 @@ public class Lists {
 
 	public void setInitAcc(Account acnt) {
 		initAcc.add(acnt);
-		this.initAcc = initAcc;
+
 	}
 
 	public ArrayList<Account> getTranAcc() {
@@ -23,7 +23,8 @@ public class Lists {
 
 	public void setTranAcc(Account acnt) {
 		tranAcc.add(acnt);
-		this.tranAcc = tranAcc;
+
 	}
+
 
 }

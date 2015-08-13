@@ -1,20 +1,21 @@
+import java.util.Date;
 
 public class Account {
 
-	public int accNum;
+	public String accNum;
 	public String Name;
 	public double initBal;
 	public double amount;
-	public long Date;
+	public Date date;
 	public String tranType;
 	public double totalBal;
 	public boolean overDraft;
 
 	
-	public int getAccNum() {
+	public String getAccNum() {
 		return accNum;
 	}
-	public void setAccNum(int accNum) {
+	public void setAccNum(String accNum) {
 		this.accNum = accNum;
 	}
 	public String getName() {
@@ -44,11 +45,11 @@ public class Account {
 	public void setTotalBal(double totalBal) {
 		this.totalBal = totalBal;
 	}
-	public long getDate() {
-		return Date;
+	public Date getDate() {
+		return date;
 	}
-	public void setDate(long date) {
-		Date = date;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	public String getTranType() {
 		return tranType;
